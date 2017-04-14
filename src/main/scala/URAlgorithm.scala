@@ -567,7 +567,10 @@ class URAlgorithm(val ap: URAlgorithmParams)
 
     val shouldFields: Seq[JValue] = allBoostedCorrelators.map {
       case BoostableCorrelators(actionName, itemIDs, boost) =>
-        render("terms" -> (actionName -> itemIDs) ~ ("boost" -> boost))
+        if (actionName == "keyword_preference")
+          render("match" -> ("keyword_preference" -> itemIDs) ~ ("boost" -> boost))
+        else
+          render("terms" -> (actionName -> itemIDs) ~ ("boost" -> boost))
     }
 
     val shouldScore: JValue = parse(
