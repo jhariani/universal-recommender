@@ -130,6 +130,7 @@ object EsClient {
         |      }
         |    },
         """.stripMargin.replace("\n", "")
+      }
 
       val mappingsTail = """
         |    "id": {
