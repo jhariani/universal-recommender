@@ -120,6 +120,17 @@ object EsClient {
         """.stripMargin.replace("\n", "")
       }
 
+      def analyzedMappingsField(`type`: String) = {
+        s"""
+        |    : {
+        |      "type": "${`type`}",
+        |      "analyzer": "standard",
+        |      "norms" : {
+        |        "enabled" : false
+        |      }
+        |    },
+        """.stripMargin.replace("\n", "")
+
       val mappingsTail = """
         |    "id": {
         |      "type": "string",
@@ -133,7 +144,9 @@ object EsClient {
       """.stripMargin.replace("\n", "")
 
       fieldNames.foreach { fieldName =>
-        if (typeMappings.contains(fieldName))
+        if (fieldName == "keyword_preference")
+          mappings += (fieldName + analyzedMappingsField("string"))
+        else if (typeMappings.contains(fieldName))
           mappings += (fieldName + mappingsField(typeMappings(fieldName)))
         else // unspecified fields are treated as not_analyzed strings
           mappings += (fieldName + mappingsField("string"))
